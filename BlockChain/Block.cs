@@ -26,6 +26,7 @@ namespace BlockChain
         public long Nonce { get; set; }
         //Тривалість
         public decimal MiningDuraction { get; set; }
+        public int DifficultyAtMining { get; set; }
 
     }
 }

@@ -8,20 +8,20 @@ namespace BlockChain
 {
     public class MyBlockChain
     {
+        private int _difficulty = 1;
         public List<Block> Chain {  get; set; }
         private readonly HashingService _hashingService;
         private readonly MiningService _miningService;
-        public int Difficulty { get; private set; } = 4;
-        public readonly decimal _targetBlockTime = 10; //seconds 10
-        public readonly int _adjustEveryNBlocks = 5; //
+        public readonly decimal _targetBlockTime = 2; //seconds
+        public readonly int _adjustEveryNBlocks = 2; //
 
-        public MyBlockChain(int difficulty)
+        public MyBlockChain(/*int difficulty*/)
         {
             Chain = new List<Block>();
             _hashingService = new HashingService();
             _miningService = new MiningService();
             AddGenesisBlock();
-            this.Difficulty = difficulty;
+            //this.Difficulty = difficulty;
         }
         private void AddGenesisBlock()
         {
@@ -45,10 +45,12 @@ namespace BlockChain
                 Index = lastBlock.Index+1,
                 Data = data,
                 PrevHash = lastBlock.Hash,
-                TimeStamp = DateTime.UtcNow
+                TimeStamp = DateTime.Now,
+                DifficultyAtMining = _difficulty
             };
-            _miningService.MineBlock(newBlock, Difficulty);
+            //_miningService.MineBlock(newBlock, Difficulty);
             //newBlock.Hash = _hashingService.ComputerBlockHash(newBlock);
+            _miningService.MineBlock(newBlock, _difficulty);
             Chain.Add(newBlock);
             AdjustDifficulty();
         }
@@ -60,8 +62,25 @@ namespace BlockChain
             var avgTime = recentBlock.Average(b => b.MiningDuraction);
             if(avgTime < _targetBlockTime)
             {
-                Difficulty=Math.Max(1, Difficulty - 1);
-                Console.WriteLine($"Difficulty  decreased to {Difficulty}");
+                _difficulty++;
+                Console.WriteLine($"Difficulty increased to {_difficulty}");
+            }
+            if(avgTime > _targetBlockTime)
+            {
+                _difficulty = Math.Max(1, _difficulty - 1);
+                Console.WriteLine($"Difficulty  decreased to {_difficulty}");
+            }
+        }
+        // Метод для виведення історії складності, спроб (Nonce) та часу
+        public void PrintDifficultyHistory()
+        {
+            foreach (var block in Chain)
+            {
+                Console.WriteLine($"Block Index: {block.Index}");
+                Console.WriteLine($"  - Difficulty: {block.DifficultyAtMining}");
+                Console.WriteLine($"  - Attempts (Nonce): {block.Nonce}");
+                Console.WriteLine($"  - Mining Duration: {block.MiningDuraction} seconds");
+                Console.WriteLine(new string('-', 40));
             }
         }
         public bool IsChainValid()
@@ -84,7 +103,7 @@ namespace BlockChain
                 {
                     return false;
                 }
-                if(currentBlock.Hash.Substring(0, Difficulty) != new string('0', Difficulty))
+                if(currentBlock.Hash.Substring(0, _difficulty) != new string('0', _difficulty))
                 {
                     return false;
                 }

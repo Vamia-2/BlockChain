@@ -19,7 +19,9 @@ namespace BlockChain
                 Console.WriteLine($"PrevHash: {block.PrevHash}");
                 Console.WriteLine($"TimeStamp: {block.TimeStamp}");
                 Console.WriteLine($"Nonce: {block.Nonce}");
-                Console.WriteLine(new string('-', 50));
+                Console.WriteLine($"Mining Duraction: {block.MiningDuraction} seconds");
+                Console.WriteLine(new string('-', 30));
+
             }
         }
     }

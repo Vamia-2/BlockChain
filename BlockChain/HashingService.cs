@@ -11,7 +11,7 @@ namespace BlockChain
     {
         public string ComputerBlockHash(Block block)
         {
-            var blockData = $"{block.Index}{block.PrevHash}{block.TimeStamp}{block.Data}{block.Nonce}";
+            var blockData = $"{block.Index}{block.PrevHash}{block.TimeStamp}{block.Data}{block.Nonce}{block.DifficultyAtMining}";
             return ComputerHash(blockData);
         }
         private string ComputerHash(string input)

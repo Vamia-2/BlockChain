@@ -28,14 +28,15 @@ namespace BlockChain
                     //Console.WriteLine($"Hash found for block {block.Index}: {block.Hash}");
                     //
                     startTime.Stop();
-                    block.MiningDuraction = startTime.Elapsed.TotalMinutes;
+                    block.MiningDuraction = (decimal)startTime.Elapsed.TotalSeconds;
                     break;
                 }
-                if(block.Nonce% 100000 == 0 )
+                block.Nonce++;
+                if (block.Nonce % 100000 == 0 )
                 {
                     Console.WriteLine($"Mining block {block.Index}: Nonce = {block.Nonce}, Hash = {block.Hash}");
                 }
-                block.Nonce++;
+                
             }
         }
     }
