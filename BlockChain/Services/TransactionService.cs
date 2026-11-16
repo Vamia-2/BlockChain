@@ -35,7 +35,7 @@ namespace BlockChain.Services
             if (string.IsNullOrWhiteSpace(transaction.To))
             {
                 return (false, "Recipient address is required.");
-            }
+            } 
 
             if (transaction.Amount <= 0)
             {
