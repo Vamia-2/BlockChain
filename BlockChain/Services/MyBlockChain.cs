@@ -33,6 +33,7 @@ namespace BlockChain
                 Index = 0,
                 Data = "Genesis Block",
                 Author = "System",
+                Transactions = new List<Transaction>(),
                 PrevHash = "0",
                 TimeStamp = DateTime.UtcNow,
                 DifficultyAtMining = _difficulty
@@ -43,8 +44,8 @@ namespace BlockChain
             Chain.Add(genesisBlock);
         }
 
-        // Додавання нового блоку
-        public void AddBlock(string data, string author)
+        // Додавання звичайного текстового блоку
+        public void AddBlock(string data, string author = "Unknown")
         {
             var lastBlock = Chain[Chain.Count - 1];
 
@@ -67,7 +68,7 @@ namespace BlockChain
         }
 
         // Додавання блоку з транзакціями
-        public void AddBlock(List<Transaction> transactions, string author)
+        public void AddBlock(List<Transaction> transactions, string author = "Unknown")
         {
             var lastBlock = Chain[Chain.Count - 1];
 
@@ -89,7 +90,7 @@ namespace BlockChain
             AdjustDifficulty();
         }
 
-        // Автоматична зміна складності
+        // Зміна складності майнінгу
         private void AdjustDifficulty()
         {
             var recentBlock = Chain
@@ -122,18 +123,16 @@ namespace BlockChain
             }
         }
 
-        // Історія складності майнінгу
+        // Виведення історії складності
         public void PrintDifficultyHistory()
         {
             foreach (var block in Chain)
             {
                 Console.WriteLine($"Block Index: {block.Index}");
+                Console.WriteLine($"Difficulty: {block.DifficultyAtMining}");
+                Console.WriteLine($"Nonce: {block.Nonce}");
                 Console.WriteLine(
-                    $"  - Difficulty: {block.DifficultyAtMining}"
-                );
-                Console.WriteLine($"  - Attempts (Nonce): {block.Nonce}");
-                Console.WriteLine(
-                    $"  - Mining Duration: {block.MiningDuraction} seconds"
+                    $"Mining Duration: {block.MiningDuraction} seconds"
                 );
 
                 Console.WriteLine(new string('-', 40));
@@ -180,12 +179,9 @@ namespace BlockChain
                         return false;
                     }
                 }
-                else
+                else if (currentBlock.PrevHash != "0")
                 {
-                    if (currentBlock.PrevHash != "0")
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 

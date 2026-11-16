@@ -30,7 +30,7 @@ namespace BlockChain.Models
         // Тривалість майнінгу
         public decimal MiningDuraction { get; set; }
 
-        // Складність під час майнінгу
+        // Складність майнінгу
         public int DifficultyAtMining { get; set; }
     }
 }

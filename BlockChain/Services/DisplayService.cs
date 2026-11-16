@@ -1,20 +1,18 @@
 ﻿
-using BlockChain.Models;
-
 namespace BlockChain
 {
     public class DisplayService
     {
         public void DisplayChain(MyBlockChain blockChain)
         {
-            Console.WriteLine("\n========== BLOCKCHAIN ==========\n");
+            Console.WriteLine("\n========== BLOCKCHAIN ==========");
 
             foreach (var block in blockChain.Chain)
             {
                 Console.WriteLine($"Index: {block.Index}");
                 Console.WriteLine($"Author: {block.Author}");
-                Console.WriteLine($"Data: {block.Data}");
                 Console.WriteLine($"Hash: {block.Hash}");
+                Console.WriteLine($"Data: {block.Data}");
                 Console.WriteLine($"PrevHash: {block.PrevHash}");
                 Console.WriteLine($"TimeStamp: {block.TimeStamp}");
                 Console.WriteLine($"Nonce: {block.Nonce}");
@@ -27,17 +25,7 @@ namespace BlockChain
                     $"Difficulty: {block.DifficultyAtMining}"
                 );
 
-                if (block.Transactions.Count > 0)
-                {
-                    Console.WriteLine("Transactions:");
-
-                    foreach (var transaction in block.Transactions)
-                    {
-                        Console.WriteLine(transaction);
-                    }
-                }
-
-                Console.WriteLine(new string('-', 50));
+                Console.WriteLine(new string('-', 40));
             }
         }
     }
