@@ -1,106 +1,143 @@
 ﻿using BlockChain;
+using BlockChain.Models;
+using BlockChain.Services;
 
-//Lesson 1
-//var blockChainService = new MyBlockChain();
-//Lesson 1, 2
-//var blockChain = new MyBlockChain(5);
-//var displayService = new DisplayService();
-
-//Lesson 3
-    var blockChain = new MyBlockChain();
-    var displayService = new DisplayService();
-
-//Lesson 1
-//Level 1
-//blockChainService.AddBlock("User Registration: Alex");
-//blockChainService.AddBlock("Purchase: Alex bought a laptop");
-//blockChainService.AddBlock("Fund Transfer: Alex sent Bob 100");
-//blockChainService.AddBlock("Fund Transfer: Bob sent Charlie 50");
-//blockChainService.AddBlock("Fund Transfer: Charlie sent Dave 25");
+var blockChain = new MyBlockChain();
+var displayService = new DisplayService();
+var transactionService = new TransactionService();
 
 
+while (true)
+{
+    Console.WriteLine("\n========== BLOCKCHAIN MENU ==========");
+    Console.WriteLine("1. Add Block");
+    Console.WriteLine("2. Display Chain");
+    Console.WriteLine("3. Validate Chain");
+    Console.WriteLine("4. Add 20 Blocks");
+    Console.WriteLine("5. Exit");
+    Console.WriteLine("6. Print Difficulty History");
+    Console.WriteLine("7. Add Transaction Block");
+    Console.WriteLine("8. Test Author Hash");
 
-//displayService.DisplayChain(blockChainService);
-//var isValid = blockChainService.IsChainValid();
+    Console.Write("\nChoose option: ");
 
-//if (isValid)
-//{
-//    Console.WriteLine("Blockchain is valid");
-//}
-//else
-//{
-//    Console.WriteLine("Blockchain is not valid");
-//}
-
-//Console.ReadLine();
-
-//blockChainService.Chain[2].Data = "bob send charlie 1000";
-//displayService.DisplayChain(blockChainService);
-
-//isValid = blockChainService.IsChainValid();
-//if(isValid)
-//{
-//    Console.WriteLine("Blockchain is Valid");
-//}
-//else
-//{
-//    Console.WriteLine("Blockshain is not valid");
-//}
-
-
-
-//Lesson 2
-//blockChain.AddBlock("Alex send 1 BTC to Bob");
-//blockChain.AddBlock("Bob send 0.5 BTC to Charlie");
-//blockChain.AddBlock("Charlie send 0.2 BTC to Dave");
-//Level 1
-//blockChain.AddBlock("User Registration: Ivan");
-//blockChain.AddBlock("Action: Displayed User Name Successfully");
-//displayService.DisplayChain(blockChain);
-//Console.WriteLine("Is Valid:"+ blockChain.IsChainValid());
-
-
-//Lesson 3
-//Menu
-    while(true)
-    {
-    Console.ReadLine();
-    Console.Clear();
-    Console.WriteLine("1 Add Block");
-    Console.WriteLine("2 Display Chain");
-    Console.WriteLine("3 Validate Chain");
-    Console.WriteLine("4 Add 20 Block");
-    Console.WriteLine("5 Exit");
-    Console.WriteLine("6 Print Difficulty History");
     var enter = Console.ReadLine();
 
-        switch(enter)
-        {
+    switch (enter)
+    {
         case "1":
-             blockChain.AddBlock("Bob send 100 coin to Alice");
+            Console.Write("Enter block data: ");
+            string data = Console.ReadLine() ?? "";
+
+            Console.Write("Enter author: ");
+            string author = Console.ReadLine() ?? "Unknown";
+
+            blockChain.AddBlock(data, author);
+
+            Console.WriteLine("Block added successfully!");
             break;
+
         case "2":
             displayService.DisplayChain(blockChain);
             break;
+
         case "3":
-            var isValid = blockChain.IsChainValid();
-            Console.WriteLine($"Is blockchain valid ? {isValid}");
+            bool isValid = blockChain.IsChainValid();
+
+            Console.WriteLine(
+                $"Is blockchain valid? {isValid}"
+            );
             break;
+
         case "4":
+            Console.Write("Enter author: ");
+            string batchAuthor = Console.ReadLine() ?? "Unknown";
+
             for (int i = 0; i < 20; i++)
             {
-                blockChain.AddBlock($"Block {i + 1} Data");
+                blockChain.AddBlock(
+                    $"Block {i + 1} Data",
+                    batchAuthor
+                );
             }
+
+            Console.WriteLine("20 blocks added successfully!");
             break;
+
         case "5":
+            Console.WriteLine("Goodbye!");
             return;
-        default:
-            Console.WriteLine("Invalid option.");
-            break;
+
         case "6":
             blockChain.PrintDifficultyHistory();
-            Console.WriteLine("\nPress any key to continue...");
+
+            Console.WriteLine("\nPress Enter to continue...");
             Console.ReadLine();
             break;
+
+        case "7":
+            Console.Write("Enter sender: ");
+            string from = Console.ReadLine() ?? "";
+
+            Console.Write("Enter recipient: ");
+            string to = Console.ReadLine() ?? "";
+
+            Console.Write("Enter amount: ");
+            if (!decimal.TryParse(Console.ReadLine(), out decimal amount))
+            {
+                Console.WriteLine("Invalid amount!");
+                break;
+            }
+
+            Console.Write("Enter author: ");
+            string transactionAuthor = Console.ReadLine() ?? "Unknown";
+
+            try
+            {
+                var transaction = transactionService.CreateTransaction(
+                    from,
+                    to,
+                    amount
+                );
+
+                blockChain.AddBlock(
+                    new List<Transaction> { transaction },
+                    transactionAuthor
+                );
+
+                Console.WriteLine("Transaction block added!");
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+
+            break;
+
+        case "8":
+            if (blockChain.Chain.Count > 1)
+            {
+                Console.WriteLine(
+                    "Blockchain before changing Author: " +
+                    blockChain.IsChainValid()
+                );
+
+                blockChain.Chain[1].Author = "Another Author";
+
+                Console.WriteLine(
+                    "Blockchain after changing Author: " +
+                    blockChain.IsChainValid()
+                );
+            }
+            else
+            {
+                Console.WriteLine("First add a block!");
+            }
+
+            break;
+
+        default:
+            Console.WriteLine("Invalid option!");
+            break;
     }
-    }
+}

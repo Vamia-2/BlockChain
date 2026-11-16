@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BlockChain.Models;
 
 namespace BlockChain
 {
@@ -15,28 +12,36 @@ namespace BlockChain
         {
             _hashingService = new HashingService();
         }
+
         public void MineBlock(Block block, int difficulty)
         {
             var target = new string('0', difficulty);
+
             var startTime = Stopwatch.StartNew();
-            while(true)
+
+            while (true)
             {
                 block.Hash = _hashingService.ComputerBlockHash(block);
-                if(block.Hash.Substring(0, difficulty) == target ) 
-                {   
-                    //Lesson 1, 2
-                    //Console.WriteLine($"Hash found for block {block.Index}: {block.Hash}");
-                    //
+
+                if (block.Hash.StartsWith(target))
+                {
                     startTime.Stop();
-                    block.MiningDuraction = (decimal)startTime.Elapsed.TotalSeconds;
+
+                    block.MiningDuraction =
+                        (decimal)startTime.Elapsed.TotalSeconds;
+
                     break;
                 }
+
                 block.Nonce++;
-                if (block.Nonce % 100000 == 0 )
+
+                if (block.Nonce % 100000 == 0)
                 {
-                    Console.WriteLine($"Mining block {block.Index}: Nonce = {block.Nonce}, Hash = {block.Hash}");
+                    Console.WriteLine(
+                        $"Mining block {block.Index}: " +
+                        $"Nonce = {block.Nonce}, Hash = {block.Hash}"
+                    );
                 }
-                
             }
         }
     }

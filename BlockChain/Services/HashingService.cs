@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using BlockChain.Models;
 
 namespace BlockChain
 {
@@ -11,7 +12,9 @@ namespace BlockChain
     {
         public string ComputerBlockHash(Block block)
         {
-            var blockData = $"{block.Index}{block.PrevHash}{block.TimeStamp}{block.Data}{block.Nonce}{block.DifficultyAtMining}";
+            var stringTransactionRaw = string.Concat(block.Transactions.Select(t => t.ToRawString()));
+
+            var blockData = $"{block.Index}{block.PrevHash}{block.TimeStamp}{block.Data}{block.Author}{stringTransactionRaw}{block.Nonce}{block.DifficultyAtMining}";
             return ComputerHash(blockData);
         }
         private string ComputerHash(string input)
